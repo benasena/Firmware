@@ -407,7 +407,13 @@ void register_sig_handler()
 	sig_segv.sa_handler = sig_segv_handler;
 	sig_segv.sa_flags = SA_RESTART | SA_SIGINFO;
 
+#ifdef __PX4_CYGWIN
+	// do not catch SIGINT on cygwin such that the process gets killed
+	(void)sig_int; // this varibale is unused
+#else
 	sigaction(SIGINT, &sig_int, nullptr);
+#endif
+
 	//sigaction(SIGTERM, &sig_int, nullptr);
 	sigaction(SIGFPE, &sig_fpe, nullptr);
 	sigaction(SIGPIPE, &sig_pipe, nullptr);
